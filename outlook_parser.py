@@ -4,6 +4,7 @@ from selenium.webdriver.chrome.options import Options
 import time
 from datetime import datetime, timedelta
 from dateutil import parser, tz
+import tempfile
 
 
 class OutlookParser:
@@ -13,7 +14,12 @@ class OutlookParser:
         self.options.add_argument("--headless=new")
         self.options.add_argument("--disable-gpu")
         self.options.add_argument("--no-sandbox")
+
+        # Create a temporary unique user-data directory for Chrome
+        self.temp_user_data_dir = tempfile.mkdtemp()
+        self.options.add_argument(f"--user-data-dir={self.temp_user_data_dir}")
         self.driver = webdriver.Chrome(options=self.options)
+
         self.local_tz = tz.tzlocal()
         self.target_date = self._resolve_target_date()
         self.items = []
