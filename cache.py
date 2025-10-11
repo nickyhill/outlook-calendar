@@ -3,8 +3,12 @@ import os
 from datetime import datetime, timedelta
 
 class JsonCache:
-    def __init__(self, cache_dir="/srv/outlook_cache", expiry_minutes=1):
-        self.cache_dir = cache_dir
+    def __init__(self, base_dir=None, expiry_minutes=1440):
+        # Default: tmp/outlook-cache inside repo directory
+        if base_dir is None:
+            base_dir = os.path.join(os.path.dirname(__file__), "tmp", "outlook-cache")
+        self.cache_dir = base_dir
+
         self.expiry = timedelta(minutes=expiry_minutes)
         if not os.path.exists(self.cache_dir):
             os.makedirs(self.cache_dir)
