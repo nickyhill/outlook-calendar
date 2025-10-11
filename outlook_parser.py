@@ -27,7 +27,7 @@ class OutlookParser:
         self.events = []
 
         # CACHE
-        self.cache = JsonCache()
+        self.cache = JsonCache(expiry_minutes=60)
 
     def _resolve_target_date(self):
         """Decide which date to get events for based on command."""
@@ -115,16 +115,24 @@ class OutlookParser:
         return [header] + self.events
 
     def run(self):
-        """Full pipeline in one call."""
-
         """Fetch, parse, and return cached events if available."""
-        cache_key = f"{self.command}_{self.target_date}"
-        cached_events = self.cache.load(cache_key)
-        if cached_events:
-            return cached_events
 
+        # Use a single cache key for all events (full JSON)
+        cache_key = "all_events"
+        cached_data = self.cache.load(cache_key)
+
+        if cached_data:
+            # Filter cached events for the target date
+            self.items = cached_data
+            self.parse_events()
+            return self.get_results()
+
+        # If cache is empty or expired, fetch from Outlook
         self.fetch_events()
+
+        # Save raw fetched items to cache
+        self.cache.save(cache_key, self.items)
+
+        # Then parse for the specific day
         self.parse_events()
-        results = self.get_results()
-        self.cache.save(cache_key, results)
-        return results
+        return self.get_results()
