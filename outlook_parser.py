@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 from dateutil import parser, tz
 import tempfile
 
+from cache import JsonCache
 
 class OutlookParser:
     def __init__(self, command: str):
@@ -24,6 +25,9 @@ class OutlookParser:
         self.target_date = self._resolve_target_date()
         self.items = []
         self.events = []
+
+        # CACHE
+        self.cache = JsonCache()
 
     def _resolve_target_date(self):
         """Decide which date to get events for based on command."""
@@ -112,6 +116,15 @@ class OutlookParser:
 
     def run(self):
         """Full pipeline in one call."""
+
+        """Fetch, parse, and return cached events if available."""
+        cache_key = f"{self.command}_{self.target_date}"
+        cached_events = self.cache.load(cache_key)
+        if cached_events:
+            return cached_events
+
         self.fetch_events()
         self.parse_events()
-        return self.get_results()
+        results = self.get_results()
+        self.cache.save(cache_key, results)
+        return results
