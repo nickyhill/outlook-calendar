@@ -1,0 +1,6 @@
+python-dotenv
+discord.py==2.4.1
+selenium==4.15.0
+python-dateutil==2.8.2
+datetime
+dateutil

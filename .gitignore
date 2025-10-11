@@ -1,0 +1,27 @@
+# Discord bot secrets and sensitive data
+.env
+config.json
+
+# Python cache and environment files
+__pycache__/
+*.py[cod]
+*.egg
+*.egg-info/
+.installed.cfg
+.Python
+build/
+dist/
+venv/
+env/
+.idea/
+
+
+# virtual environment
+.venv
+
+# Operating System files
+.DS_Store
+.vscode/
+
+# Ignore log files
+*.log
