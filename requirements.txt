@@ -3,4 +3,3 @@ discord.py
 selenium
 python-dateutil
 datetime
-dateutil
