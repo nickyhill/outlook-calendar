@@ -46,12 +46,16 @@ class OutlookParser:
     def _resolve_target_date(self):
         """Decide which date to get events for based on command."""
         today = datetime.now(self.local_tz).date()
+        cmd = self.command.lower().strip()
 
-        if self.command == "today":
+        # Remove 'all' if present
+        cmd = cmd.replace(" all", "")
+
+        if "today" in cmd:
             return today
-        elif self.command == "tomorrow":
+        elif "tomorrow" in cmd:
             return today + timedelta(days=1)
-        elif self.command.isdigit():
+        elif cmd.isdigit():
             # A specific date number in current month
             return today.replace(day=int(self.command))
         else:
