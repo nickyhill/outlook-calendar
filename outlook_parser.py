@@ -1,6 +1,7 @@
 # outlook_parser.py
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.common.service import Service
 import time
 from datetime import datetime, timedelta
 from dateutil import parser, tz
@@ -15,11 +16,23 @@ class OutlookParser:
         self.options.add_argument("--headless=new")
         self.options.add_argument("--disable-gpu")
         self.options.add_argument("--no-sandbox")
+        self.options.add_argument("--disable-dev-shm-usage")  # use /tmp instead of /dev/shm
+        self.options.add_argument("--single-process")  # reduce processes
+        self.options.add_argument("--disable-extensions")  # disable extensions
+        self.options.add_argument("--disable-background-networking")
+        self.options.add_argument("--disable-background-timer-throttling")
+        self.options.add_argument("--disable-browser-side-navigation")
 
         # Create a temporary unique user-data directory for Chrome
         self.temp_user_data_dir = tempfile.mkdtemp()
         self.options.add_argument(f"--user-data-dir={self.temp_user_data_dir}")
-        self.driver = webdriver.Chrome(options=self.options)
+
+        # Explicitly use Chromium instead of Chrome
+        self.options.binary_location = "/usr/bin/chromium-browser"
+
+        # Explicitly point to chromedriver path
+        service = Service("/usr/bin/chromedriver")
+        self.driver = webdriver.Chrome(service=service, options=self.options)
 
         self.local_tz = tz.tzlocal()
         self.target_date = self._resolve_target_date()
@@ -44,6 +57,7 @@ class OutlookParser:
             return today  # default
 
     def fetch_events(self):
+        print("Fetching events")
         """Load the Outlook published calendar and intercept the JSON events."""
         url = (
             "https://outlook.office365.com/calendar/published/"
@@ -70,9 +84,12 @@ class OutlookParser:
         };
         """)
 
-        time.sleep(5)
+        print("Sleeping for 10 seconds")
+        time.sleep(10)
         events_json = self.driver.execute_script("return window.collectedEvents;")
+        print(f"Collected events: {len(events_json)}")
         self.driver.quit()
+        print("Quit Driver")
 
         if not events_json:
             raise Exception("No data collected from Outlook calendar.")
@@ -122,11 +139,13 @@ class OutlookParser:
         cached_data = self.cache.load(cache_key)
 
         if cached_data:
+            print("Found cached data")
             # Filter cached events for the target date
             self.items = cached_data
             self.parse_events()
             return self.get_results()
 
+        print("No cached data")
         # If cache is empty or expired, fetch from Outlook
         self.fetch_events()
 
