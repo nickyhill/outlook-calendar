@@ -23,6 +23,9 @@ class OutlookParser:
         self.options.add_argument("--disable-background-timer-throttling")
         self.options.add_argument("--disable-browser-side-navigation")
         self.options.add_argument("--blink-settings=imagesEnabled=false")
+        self.options.add_argument("--remote-debugging-port=9222")
+        self.options.add_argument("--window-size=1920,1080")
+
 
         # Create a temporary unique user-data directory for Chrome
         self.temp_user_data_dir = tempfile.mkdtemp()
@@ -66,7 +69,13 @@ class OutlookParser:
             "ff41626f2a4e4ee0a459000db28a7535@acphs.edu/"
             "f814c4c342ad44a6975f38f9293124e414329295217178850134/calendar.html"
         )
-        self.driver.get(url)
+        try:
+            self.driver.get(url)
+        except Exception as e:
+            print(f"❌ Error loading calendar page: {e}")
+            self.driver.quit()
+            return []
+
         print("Done getting URL")
         print("Capturing events")
         # Hook fetch() to capture calendar data
