@@ -1,7 +1,7 @@
 # outlook_parser.py
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.common.service import Service
+from selenium.webdriver.chrome.service import Service
 import time
 from datetime import datetime, timedelta
 from dateutil import parser, tz
@@ -31,7 +31,7 @@ class OutlookParser:
         self.options.binary_location = "/usr/bin/chromium-browser"
 
         # Explicitly point to chromedriver path
-        service = Service("~/snap/bin/chromium.chromedriver")
+        service = Service("/usr/bin/chromedriver")
         self.driver = webdriver.Chrome(service=service, options=self.options)
 
         self.local_tz = tz.tzlocal()
