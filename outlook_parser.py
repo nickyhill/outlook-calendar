@@ -22,6 +22,7 @@ class OutlookParser:
         self.options.add_argument("--disable-background-networking")
         self.options.add_argument("--disable-background-timer-throttling")
         self.options.add_argument("--disable-browser-side-navigation")
+        self.options.add_argument("--blink-settings=imagesEnabled=false")
 
         # Create a temporary unique user-data directory for Chrome
         self.temp_user_data_dir = tempfile.mkdtemp()
@@ -33,6 +34,7 @@ class OutlookParser:
         # Explicitly point to chromedriver path
         service = Service("/usr/bin/chromedriver")
         self.driver = webdriver.Chrome(service=service, options=self.options)
+        self.driver.set_page_load_timeout(240)
 
         self.local_tz = tz.tzlocal()
         self.target_date = self._resolve_target_date()
