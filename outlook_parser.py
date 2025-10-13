@@ -57,7 +57,7 @@ class OutlookParser:
             return today + timedelta(days=1)
         elif cmd.isdigit():
             # A specific date number in current month
-            return today.replace(day=int(self.command))
+            return today.replace(day=int(cmd))
         else:
             return today  # default
 
