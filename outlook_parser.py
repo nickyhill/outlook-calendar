@@ -145,15 +145,17 @@ class OutlookParser:
 
         formatted_events = []
         for e in self.events:
-            # Check if this event is at Track & Field
-            if track_locations in e:
-                e = "**🏟️ " + e + "**"
-                formatted_events.append(e)
+            if "Track & Field" in e:  # or however you define track_locations
+                e = "**🏟️ " + e + "**"  # highlight
+            formatted_events.append(e)
 
         if not show_all:
-            return [header] + formatted_events
+            # Only show track events
+            track_only = [ev for ev in formatted_events if "🏟️" in ev]
+            return [header] + track_only
 
-        return [header] + self.events
+        # Show all events, with track ones highlighted
+        return [header] + formatted_events
 
     def run(self):
         """Fetch, parse, and return cached events if available."""
