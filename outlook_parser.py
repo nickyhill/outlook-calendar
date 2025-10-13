@@ -138,25 +138,19 @@ class OutlookParser:
             return [header, "No events found."]
 
         show_all = self.command.endswith("all")  # e.g., "$cal today all"
-        track_locations = ["Track & Field", "ACPHS Track & Field Facility"]
+        print(f"show_all {show_all}")
+
+        track_locations = "ACPHS Track & Field Facility"
 
         formatted_events = []
         for e in self.events:
             # Check if this event is at Track & Field
-            is_track = any(loc in e for loc in track_locations)
-            if not show_all and not is_track:
-                continue  # skip non-Track & Field events if "all" not requested
-
-            # Highlight Track & Field events
-            if is_track:
+            if track_locations in e:
                 e = "**🏟️ " + e + "**"
+                formatted_events.append(e)
 
-            formatted_events.append(e)
-
-        if not formatted_events:
-            return [header, "No events found."]
-
-
+        if not show_all:
+            return [header] + formatted_events
 
         return [header] + self.events
 
