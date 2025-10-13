@@ -65,7 +65,8 @@ class OutlookParser:
             "f814c4c342ad44a6975f38f9293124e414329295217178850134/calendar.html"
         )
         self.driver.get(url)
-
+        print("Done getting URL")
+        print("Capturing events")
         # Hook fetch() to capture calendar data
         self.driver.execute_script("""
         window.collectedEvents = [];
