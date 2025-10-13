@@ -17,15 +17,10 @@ class OutlookParser:
         self.options.add_argument("--disable-gpu")
         self.options.add_argument("--no-sandbox")
         self.options.add_argument("--disable-dev-shm-usage")  # use /tmp instead of /dev/shm
-        self.options.add_argument("--single-process")  # reduce processes
         self.options.add_argument("--disable-extensions")  # disable extensions
-        self.options.add_argument("--disable-background-networking")
-        self.options.add_argument("--disable-background-timer-throttling")
-        self.options.add_argument("--disable-browser-side-navigation")
         self.options.add_argument("--blink-settings=imagesEnabled=false")
         self.options.add_argument("--remote-debugging-port=9222")
         self.options.add_argument("--window-size=1920,1080")
-
 
         # Create a temporary unique user-data directory for Chrome
         self.temp_user_data_dir = tempfile.mkdtemp()
