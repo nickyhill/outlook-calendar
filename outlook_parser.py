@@ -8,6 +8,7 @@ from dateutil import parser, tz
 import tempfile
 
 from cache import JsonCache
+from killchrome import kill_leftover_chrome
 
 class OutlookParser:
     def __init__(self, command: str):
@@ -19,7 +20,7 @@ class OutlookParser:
         self.options.add_argument("--disable-dev-shm-usage")  # use /tmp instead of /dev/shm
         self.options.add_argument("--disable-extensions")  # disable extensions
         self.options.add_argument("--blink-settings=imagesEnabled=false")
-        self.options.add_argument("--remote-debugging-port=9222")
+        self.options.add_argument("--remote-debugging-port=0")
         self.options.add_argument("--window-size=1920,1080")
 
         # Create a temporary unique user-data directory for Chrome
@@ -156,7 +157,7 @@ class OutlookParser:
 
     def run(self):
         """Fetch, parse, and return cached events if available."""
-
+        kill_leftover_chrome()
         # Use a single cache key for all events (full JSON)
         cache_key = "all_events"
         cached_data = self.cache.load(cache_key)
