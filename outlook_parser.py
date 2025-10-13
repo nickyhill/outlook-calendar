@@ -31,7 +31,7 @@ class OutlookParser:
         self.options.binary_location = "/usr/bin/chromium-browser"
 
         # Explicitly point to chromedriver path
-        service = Service("/usr/bin/chromedriver")
+        service = Service("/snap/bin/chromium")
         self.driver = webdriver.Chrome(service=service, options=self.options)
 
         self.local_tz = tz.tzlocal()
