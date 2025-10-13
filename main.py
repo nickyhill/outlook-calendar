@@ -50,6 +50,7 @@ async def cal(ctx, *, arg="today"):
     $cal 20          -> events on the 20th of current month
     """
     parser = OutlookParser(str(arg))
+    print(str(arg))
     try:
         results = parser.run()  # runs fetch, parse, and get_results
         message = "\n".join(results)
