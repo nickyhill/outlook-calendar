@@ -36,7 +36,8 @@ async def on_member_join(member):
             "You can use the following commands to see ACPHS calendar events:\n"
             "`$cal today` - Events for today\n"
             "`$cal tomorrow` - Events for tomorrow\n"
-            "`$cal <day>` - Events on a specific day of this month (e.g., `$cal 20`)"
+            "`$cal <day>` - Events on a specific day of this month (e.g., `$cal 19`)\n"
+            "`$cal <*> all` - All events on that particular day (e.g., `$cal today all`, `$cal 19 all`)"
         )
 
 
