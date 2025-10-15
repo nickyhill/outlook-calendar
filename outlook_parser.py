@@ -20,7 +20,7 @@ class OutlookParser:
         self.options.add_argument("--disable-dev-shm-usage")  # use /tmp instead of /dev/shm
         self.options.add_argument("--disable-extensions")  # disable extensions
         self.options.add_argument("--blink-settings=imagesEnabled=false")
-        self.options.add_argument("--remote-debugging-port=0")
+        self.options.add_argument("--remote-debugging-port=9222")
         self.options.add_argument("--window-size=1920,1080")
 
         # Create a temporary unique user-data directory for Chrome
