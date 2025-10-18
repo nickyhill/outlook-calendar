@@ -16,7 +16,6 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
-parser = OutlookParser()
 
 
 bot = commands.Bot(command_prefix='$', intents=intents)
@@ -51,19 +50,15 @@ async def cal(ctx, *, arg="today"):
     $cal tomorrow    -> events tomorrow
     $cal 20          -> events on the 20th of current month
     """
-    global parser
+    parser = OutlookParser(str(arg))
+    print(str(arg))
     try:
-        parser.set_command(str(arg))
-        results = parser.run()
+        results = parser.run()  # runs fetch, parse, and get_results
         message = "\n".join(results)
         await ctx.send(message)
     except Exception as e:
-        await ctx.send(f"⚠️ Error: {e}\nRestarting parser...")
-        try:
-            parser.driver.quit()  # close broken driver
-        except Exception:
-            pass
-        parser = OutlookParser(str(arg))  # reinit
+        await ctx.send(f"❌ Error fetching events: {e}")
+        parser.driver.quit()
 
 
 
