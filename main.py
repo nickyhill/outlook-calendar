@@ -16,6 +16,7 @@ intents = discord.Intents.default()
 intents.message_content = True
 intents.members = True
 
+parser = OutlookParser()
 
 
 bot = commands.Bot(command_prefix='$', intents=intents)
@@ -50,7 +51,7 @@ async def cal(ctx, *, arg="today"):
     $cal tomorrow    -> events tomorrow
     $cal 20          -> events on the 20th of current month
     """
-    parser = OutlookParser(str(arg))
+    parser.set_command(str(arg))
     print(str(arg))
     try:
         results = parser.run()  # runs fetch, parse, and get_results

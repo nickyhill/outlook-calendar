@@ -11,7 +11,7 @@ from cache import JsonCache
 from killchrome import kill_leftover_chrome
 
 class OutlookParser:
-    def __init__(self, command: str):
+    def __init__(self, command: str="today all"):
         self.command = command.lower().strip()
         self.options = Options()
         self.options.add_argument("--headless=new")
@@ -42,6 +42,10 @@ class OutlookParser:
 
         # CACHE
         self.cache = JsonCache(expiry_minutes=60)
+
+    def set_command(self, command: str):
+        self.command = command.lower().strip()
+
 
     def _resolve_target_date(self):
         """Decide which date to get events for based on command."""
