@@ -51,14 +51,19 @@ async def cal(ctx, *, arg="today"):
     $cal tomorrow    -> events tomorrow
     $cal 20          -> events on the 20th of current month
     """
-    parser.set_command(str(arg))
-    print(str(arg))
+    global parser
     try:
-        results = parser.run()  # runs fetch, parse, and get_results
+        parser.set_command(str(arg))
+        results = parser.run()
         message = "\n".join(results)
         await ctx.send(message)
     except Exception as e:
-        await ctx.send(f"❌ Error fetching events: {e}")
+        await ctx.send(f"⚠️ Error: {e}\nRestarting parser...")
+        try:
+            parser.driver.quit()  # close broken driver
+        except Exception:
+            pass
+        parser = OutlookParser(str(arg))  # reinit
 
 
 
