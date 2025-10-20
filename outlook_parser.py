@@ -2,7 +2,9 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 import time
+import logging
 from datetime import datetime, timedelta
 from dateutil import parser, tz
 import tempfile
@@ -30,8 +32,19 @@ class OutlookParser:
         # Explicitly use Chromium instead of Chrome
         self.options.binary_location = "/usr/bin/chromium-browser"
 
+        # Capture browser console logs
+        caps = DesiredCapabilities.CHROME
+        caps["goog:loggingPrefs"] = {"browser": "ALL"}  # <-- captures browser console logs
+
         # Explicitly point to chromedriver path
-        service = Service("/usr/bin/chromedriver")
+        service = Service("/usr/bin/chromedriver",
+                          log_path="/opt/outlook-calendar/chromedriver.log")
+
+        logging.getLogger("selenium").setLevel(logging.DEBUG)
+
+        logging.basicConfig(filename="/opt/outlook-calendar/selenium_debug.log",
+                            level=logging.DEBUG)
+
         self.driver = webdriver.Chrome(service=service, options=self.options)
         self.driver.set_page_load_timeout(240)
 
@@ -46,6 +59,14 @@ class OutlookParser:
     def set_command(self, command: str):
         self.command = command.lower().strip()
 
+    def _print_browser_errors(self):
+        # Print or log any browser console errors
+        try:
+            logs = self.driver.get_log("browser")
+            for entry in logs:
+                print(f"Browser console [{entry['level']}]: {entry['message']}")
+        except Exception as e:
+            print(f"Could not fetch browser logs: {e}")
 
     def _resolve_target_date(self):
         """Decide which date to get events for based on command."""
@@ -78,6 +99,7 @@ class OutlookParser:
         except Exception as e:
             print(f"❌ Error loading calendar page: {e}")
             self.driver.quit()
+            self._print_browser_errors()
             return []
 
         print("Done getting URL")
@@ -112,6 +134,7 @@ class OutlookParser:
 
         print(f"Collected events: {len(events_json)}")
         self.driver.quit()
+        self._print_browser_errors()
         print("Quit Driver")
 
         if not events_json:
