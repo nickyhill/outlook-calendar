@@ -99,8 +99,17 @@ class OutlookParser:
             });
         };
         """)
+        counter = 0
+        while counter < 10:
+            try:
+                events_json = self.driver.execute_script("return window.collectedEvents;")
+                break
+            except Exception as e:
+                counter += 1
+                print(f"script failed trying again. Try: {counter}-- Exception: {e}")
+                time.sleep(3)
+                continue
 
-        events_json = self.driver.execute_script("return window.collectedEvents;")
         print(f"Collected events: {len(events_json)}")
         self.driver.quit()
         print("Quit Driver")
