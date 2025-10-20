@@ -142,6 +142,8 @@ class OutlookParser:
 
     def get_results(self):
         """Return formatted text list for Discord or terminal."""
+        kill_leftover_chrome()
+
         header = f"📅 Events for {self.target_date.strftime('%A, %B %d, %Y')}"
         if not self.events:
             return [header, "No events found."]
@@ -167,7 +169,6 @@ class OutlookParser:
 
     def run(self):
         """Fetch, parse, and return cached events if available."""
-        kill_leftover_chrome()
         # Use a single cache key for all events (full JSON)
         cache_key = "all_events"
         cached_data = self.cache.load(cache_key)
