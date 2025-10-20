@@ -100,8 +100,6 @@ class OutlookParser:
         };
         """)
 
-        print("Sleeping for 10 seconds")
-        time.sleep(10)
         events_json = self.driver.execute_script("return window.collectedEvents;")
         print(f"Collected events: {len(events_json)}")
         self.driver.quit()
