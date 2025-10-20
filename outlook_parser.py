@@ -125,7 +125,11 @@ class OutlookParser:
         while counter < 10:
             try:
                 events_json = self.driver.execute_script("return window.collectedEvents;")
-                break
+                if not events_json:
+                    counter += 1
+                    continue
+                else:
+                    break
             except Exception as e:
                 counter += 1
                 print(f"script failed trying again. Try: {counter}-- Exception: {e}")
